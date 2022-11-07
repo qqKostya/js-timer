@@ -1,3 +1,10 @@
+// import { 
+//   getTodayDateFormat, 
+//   getPreciseDateDifference
+//  } from "../core/utils/date";
+
+import * as DateUtils from '../core/utils/date';
+
 export class TimerBlock {
   #date
   #timerContainer
@@ -9,16 +16,28 @@ export class TimerBlock {
     this.#timerTextHTML = document.createElement('h2');
   }
 
+  #getTimerContent () {
+    return DateUtils.getPreciseDateDifference(new Date(), this.#date);
+  }
+
+  #enableDateUpdate () {
+    setInterval(() => {
+      this.#timerTextHTML.textContent = this.#getTimerContent();
+    }, 1000);
+  }
+
   render () {
     this.#timerContainer.id = 'timer';
     this.#timerTextHTML.className = 'timer-text';
-    this.#timerTextHTML.textContent = 'TIME';
+    this.#timerTextHTML.textContent = this.#getTimerContent();
 
     const todayHTML = document.createElement('div');
     todayHTML.className = 'today-date';
-    todayHTML.textContent = new Date();
+    const todayDateFormat = DateUtils.getTodayDateFormat(new Date());
+    todayHTML.textContent = `(сегодня: ${todayDateFormat})`;
 
     this.#timerContainer.append(this.#timerTextHTML, todayHTML);
+    this.#enableDateUpdate();
 
     return this.#timerContainer;
   }
